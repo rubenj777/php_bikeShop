@@ -5,7 +5,7 @@ namespace App;
 class Response
 {
     /**
-     * redirigie vers l'url passée en param
+     * redirige vers l'url passée en param
      * @param array $param
      * @return void
      */

@@ -2,8 +2,6 @@
 
 namespace Controllers;
 
-use Models\AbstractModel;
-
 class User extends AbstractController
 {
     protected $defaultModelName = \Models\User::class;
@@ -20,13 +18,17 @@ class User extends AbstractController
         $display_name = null;
 
         if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['email']) && !empty($_POST['display_name'])) {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $email = $_POST['email'];
-            $display_name = $_POST['display_name'];
+            $username = htmlspecialchars($_POST['username']);
+            $password = htmlspecialchars($_POST['password']);
+            $email = htmlspecialchars($_POST['email']);
+            $display_name = htmlspecialchars($_POST['display_name']);
         }
 
         if ($username && $password & $email && $display_name) {
+
+            if($this->defaultModel->findByUsername($username)){
+                return $this->redirect(["type" => "user", "action" => "signUp", "info" => "userExists"]);
+            }
             $user = new \Models\User();
             $user->setUsername($username);
             $user->setPassword($password);
@@ -34,6 +36,7 @@ class User extends AbstractController
             $user->setDisplayName($display_name);
 
             $this->defaultModel->save($user);
+
 
             return $this->redirect(["type" => "velo", "action" => "index"]);
         }

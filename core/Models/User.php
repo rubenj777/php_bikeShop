@@ -45,7 +45,7 @@ class User extends AbstractModel
 
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 
     public function setEmail($email)
@@ -71,5 +71,41 @@ class User extends AbstractModel
             'email' => $user->email,
             'display_name' => $user->display_name
         ]);
+    }
+
+    /**
+     * @param string $username
+     * @return User|bool
+     */
+    public function findByUsername(string $username)
+    {
+        $sql = $this->pdo->prepare("SELECT * FROM {$this->tableName} WHERE username = :username");
+        $sql->execute(["username" => $username]);
+        $sql->setFetchMode(\PDO::FETCH_CLASS, get_class($this));
+        return $sql->fetch();
+
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     * @return bool
+     */
+    public function logIn(User $user, string $password)
+    {
+        $result = false;
+        if(password_verify($password, $user->password)) {
+            $_SESSION['user'] = $user;
+            $result = true;
+        }
+        return $result;
+    }
+
+    /**
+     * @return void
+     */
+    public function logOut()
+    {
+        unset($_SESSION['user']);
     }
 }

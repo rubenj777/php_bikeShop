@@ -34,6 +34,12 @@
         <p>Cet id n'existe pas</p>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <div class="alert alert-warning alert-dismissible fade <?php if ($_GET['info'] == 'userExists') {
+                                                                echo "show";
+                                                            } ?>" role="alert">
+        <p>Cet username existe déjà</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     <div class="container">
 
