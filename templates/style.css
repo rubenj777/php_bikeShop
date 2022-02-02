@@ -1,0 +1,27 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+.container {
+  flex: 1 0 auto;
+}
+footer {
+  color: whitesmoke;
+  flex-shrink: 0;
+}
+
+#logo {
+  color: whitesmoke;
+}
+
+img {
+  margin: 15px;
+  width: 200px;
+  height: 200px;
+  background-position: center;
+  object-fit: contain;
+}
