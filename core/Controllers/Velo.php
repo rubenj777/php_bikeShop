@@ -110,8 +110,6 @@ class Velo extends AbstractController
      * cherche l'id du vélo à modifier
      * récupère les infos du formulaire et vérifie qu'elles sont correctes
      * si tout est ok, fait appel à la fonction update() pour enregistrer les modifs dans la bdd
-     * (pour cette méthode je ne suis pas parvenu à récuperer l'id en instanciant une nouvelle classe vélo que je passe dans les paramètres)
-     * (j'ai donc fait la méthode "à l'ancienne")
      */
     public function edit()
     {
@@ -128,7 +126,6 @@ class Velo extends AbstractController
         }
 
         $name = null;
-        $image = null;
         $description = null;
         $price = null;
         $idToEdit = null;
@@ -136,25 +133,29 @@ class Velo extends AbstractController
         if (!empty($_POST['id']) && ctype_digit($_POST['id'])) {
             $idToEdit = $_POST['id'];
         }
-        // var_dump($idToEdit);
-        // die();
 
-
-        if (!empty($_POST['name']) && !empty($_POST['image']) && !empty($_POST['description']) && !empty($_POST['price'])) {
+        if (!empty($_POST['name']) && !empty($_POST['description']) && !empty($_POST['price'])) {
             $name = htmlspecialchars($_POST['name']);
-            $image = htmlspecialchars($_POST['image']);
             $description = htmlspecialchars($_POST['description']);
             $price = htmlspecialchars($_POST['price']);
         }
 
-        if ($name && $image && $description && $price && $idToEdit) {
+        if ($name && $description && $price && $idToEdit && !empty($_FILES['imageVelo'])) {
+
+            $file = new \App\File('imageVelo');
+            $file->upload();
+
             $velo = new \Models\Velo();
             $velo->setName($name);
-            $velo->setImage($image);
             $velo->setDescription($description);
             $velo->setPrice($price);
+            $velo->setImage($file->getName());
 
-            $this->defaultModel->update($velo, $idToEdit);
+            if (!$file->isImage()) {
+                return $this->redirect(["type" => "velo", "action" => "index"]);
+            } else {
+                $this->defaultModel->update($velo, $idToEdit);
+            }
 
             return $this->redirect([
                 'type' => 'velo',
