@@ -15,22 +15,21 @@ class Avis extends AbstractController
     public function new()
     {
         $veloId = null;
-        $author = null;
         $content = null;
 
-        if (!empty($_POST['author']) && !empty($_POST['content']) && !empty($_POST['veloId']) && ctype_digit($_POST['veloId'])) {
-            $author = htmlspecialchars($_POST['author']);
+        if (!empty($_POST['content']) && !empty($_POST['veloId']) && ctype_digit($_POST['veloId'])) {
             $content = htmlspecialchars($_POST['content']);
             $veloId = $_POST['veloId'];
         }
 
         $modelVelo = new \Models\Velo();
 
-        if ($veloId && $author && $content && $modelVelo->findById($veloId)) {
+        if ($veloId && $content && $modelVelo->findById($veloId)) {
             $avis = new \Models\Avis();
-            $avis->setAuthor($author);
+
             $avis->setContent($content);
             $avis->setVeloId($veloId);
+            $avis->setUserId($this->getUser()->getId());
 
             $this->defaultModel->save($avis);
 

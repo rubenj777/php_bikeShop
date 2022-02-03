@@ -40,7 +40,7 @@ class User extends AbstractController
 
             return $this->redirect(["type" => "velo", "action" => "index"]);
         }
-        return $this->render("users/create", ["pageTitle" => "Inscription"]);
+        return $this->render("users/signup", ["pageTitle" => "Inscription"]);
     }
 
     public function signIn()

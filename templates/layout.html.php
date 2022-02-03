@@ -29,6 +29,20 @@
         </div>
     </nav>
 
+
+    <!-- message d'erreur -->
+    <div class="alert alert-warning alert-dismissible fade <?php if ($_GET['info']) {
+
+                                                            } ?>" role="alert">
+        <p><?php echo $_GET['info'] ?></p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+
+
+
+
+
     <div class="container">
         <?= $pageContent ?>
     </div>

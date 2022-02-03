@@ -107,12 +107,15 @@ class User extends AbstractModel
         session_unset();
     }
 
-    public static function isLoggedIn()
+    public static function getUser()
     {
-        $result = false;
-        if($_SESSION['user']) {
-            $result = true;
+        if(isset($_SESSION['user'])) {
+            $userModel = new \Models\User();
+            return $userModel->findById($_SESSION['user']['id']);
+        } else {
+            return false;
         }
-        return $result;
     }
+
+
 }

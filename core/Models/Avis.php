@@ -9,6 +9,7 @@ class Avis extends AbstractModel
     private string $author;
     private string $content;
     private int $velo_id;
+    private int $user_id;
 
 
     // GETTERS
@@ -32,6 +33,11 @@ class Avis extends AbstractModel
         return $this->velo_id;
     }
 
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+
     // SETTERS
     public function setAuthor($author)
     {
@@ -46,6 +52,11 @@ class Avis extends AbstractModel
     public function setVeloId($velo_id)
     {
         $this->velo_id = $velo_id;
+    }
+
+    public function setUserId($user_id)
+    {
+        $this->user_id = $user_id;
     }
 
     /**
@@ -68,11 +79,11 @@ class Avis extends AbstractModel
      */
     public function save(Avis $avis): void
     {
-        $sql = $this->pdo->prepare("INSERT INTO {$this->tableName} (author, content, velo_id) VALUES (:author, :content, :velo_id)");
+        $sql = $this->pdo->prepare("INSERT INTO {$this->tableName} (content, velo_id, user_id) VALUES (:content, :velo_id, :user_id)");
         $sql->execute([
-            'author' => $avis->author,
             'content' => $avis->content,
-            'velo_id' => $avis->velo_id
+            'velo_id' => $avis->velo_id,
+            'user_id' => $avis->user_id,
         ]);
     }
 
@@ -89,5 +100,11 @@ class Avis extends AbstractModel
             'content' => $avis->content,
             'id' => $avis->id,
         ]);
+    }
+
+    public function getUser()
+    {
+        $modelUser = new \Models\User();
+        return $modelUser->findById($this->user_id);
     }
 }

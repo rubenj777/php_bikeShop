@@ -44,18 +44,21 @@ class Velo extends AbstractController
      */
     public function new()
     {
+        $user = $this->getUser();
+        if(!$user) {
+            return $this->redirect(["type"=>"velo", "action"=>"index", "info"=>"Vous devez être connecté pour créer un vélo"]);
+        }
+
         $name = null;
         $description = null;
         $price = null;
+        $user_id = null;
 
         if (!empty($_POST['name']) && !empty($_POST['description']) && !empty($_POST['price'])) {
             $name = $_POST['name'];
             $description = $_POST['description'];
             $price = $_POST['price'];
         }
-
-        // var_dump($_POST);
-        // die();
 
         if ($name && $description && $price && !empty($_FILES['imageVelo'])) {
 
@@ -68,6 +71,7 @@ class Velo extends AbstractController
             $velo->setDescription($description);
             $velo->setPrice($price);
             $velo->setImage($file->getName());
+            $velo->setUserId($this->getUser()->getId());
 
 
             if (!$file->isImage()) {

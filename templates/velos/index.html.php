@@ -5,6 +5,7 @@
         <img src="images/<?= $velo->getImage() ?>" alt="">
         <p><?= $velo->getDescription() ?></p>
         <p><?= $velo->getPrice() ?>€</p>
+        <p>auteur : <?= $velo->getUser()->getDisplayName() ?></p>
         <a class="btn btn-info w-25" href="?type=velo&action=show&id=<?= $velo->getId() ?>">Voir le vélo</a>
     </div>
 

@@ -33,4 +33,8 @@ abstract class AbstractController
     {
         return \App\View::render($template, $data);
     }
+
+    public function getUser() {
+        return \Models\User::getUser();
+    }
 }
