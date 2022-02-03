@@ -26,7 +26,7 @@ class User extends AbstractController
 
         if ($username && $password & $email && $display_name) {
 
-            if($this->defaultModel->findByUsername($username)){
+            if ($this->defaultModel->findByUsername($username)) {
                 return $this->redirect(["type" => "user", "action" => "signUp", "info" => "userExists"]);
             }
             $user = new \Models\User();
@@ -35,11 +35,46 @@ class User extends AbstractController
             $user->setEmail($email);
             $user->setDisplayName($display_name);
 
-            $this->defaultModel->save($user);
+            $this->defaultModel->register($user);
 
 
             return $this->redirect(["type" => "velo", "action" => "index"]);
         }
         return $this->render("users/create", ["pageTitle" => "Inscription"]);
+    }
+
+    public function signIn()
+    {
+        $username = null;
+        $password = null;
+
+        if (!empty($_POST['username']) && !empty($_POST['password'])) {
+            $username = htmlspecialchars($_POST['username']);
+            $password = htmlspecialchars($_POST['password']);
+        }
+
+        if ($username && $password) {
+
+            $loggingInUser = $this->defaultModel->findByUsername($username);
+
+            if (!$loggingInUser) {
+                $this->redirect(["type" => "user", "action" => "signIn", "info"=>"unknown"]);
+            }
+
+            if (!$loggingInUser->logIn($password)) {
+                $this->redirect(["type" => "user", "action" => "signIn", "info" => "wrongPassword"]);
+            }
+
+            $this->redirect(["type" => "home", "action" => "index"]);
+
+        }
+
+        return $this->render("users/signin", ["pageTitle" => "Connexion"]);
+    }
+
+    public function signOut()
+    {
+        $this->defaultModel->logOut();
+        return $this->redirect(["type" => "home", "action" => "index", "info" => "logOut"]);
     }
 }

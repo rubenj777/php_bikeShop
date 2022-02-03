@@ -13,36 +13,23 @@
 <body>
 
     <nav class="navbar nav-expand-lg navbar-light bg-dark mb-5 justify-content-between">
-        <a href="/cyclisterie" class="navbar-brand ms-5" id="logo">Vélo 2000</a>
         <div>
-            <a href="?type=user&action=signUp" class="me-5 btn btn-success">Inscription</a>
+            <a href="/cyclisterie" class="navbar-brand ms-5 mb-0" id="logo">Vélo 2000</a>
             <a href="?type=velo&action=new" class="me-5 btn btn-success">Créer un vélo</a>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <?php if(!$_SESSION) { ?>
+            <a href="?type=user&action=signUp" class="me-5 btn btn-success">Inscription</a>
+            <a href="?type=user&action=signIn" class="me-5 btn btn-success">Connexion</a>
+            <?php } else { ?>
+                <p class="me-5 mb-0 text-light">Bonjour, <?= $_SESSION['user']['displayName'] ?></p>
+            <a href="?type=user&action=signOut" class="me-5 btn btn-success">Déconnexion</a>
+            <?php } ?>
         </div>
     </nav>
 
-
-
-    <div class="alert alert-warning alert-dismissible fade <?php if ($_GET['info'] == 'errDel') {
-                                                                echo "show";
-                                                            } ?>" role="alert">
-        <p>Suppression impossible</p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div class="alert alert-warning alert-dismissible fade <?php if ($_GET['info'] == 'noId') {
-                                                                echo "show";
-                                                            } ?>" role="alert">
-        <p>Cet id n'existe pas</p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div class="alert alert-warning alert-dismissible fade <?php if ($_GET['info'] == 'userExists') {
-                                                                echo "show";
-                                                            } ?>" role="alert">
-        <p>Cet username existe déjà</p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <div class="container">
-
         <?= $pageContent ?>
     </div>
 

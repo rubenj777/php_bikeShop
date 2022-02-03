@@ -62,7 +62,7 @@ class User extends AbstractModel
      * @param User $user
      * @return void
      */
-    public function save(User $user)
+    public function register(User $user)
     {
         $sql = $this->pdo->prepare("INSERT INTO {$this->tableName} (username, password, email, display_name) VALUES (:username, :password, :email, :display_name)");
         $sql->execute([
@@ -83,19 +83,17 @@ class User extends AbstractModel
         $sql->execute(["username" => $username]);
         $sql->setFetchMode(\PDO::FETCH_CLASS, get_class($this));
         return $sql->fetch();
-
     }
 
     /**
-     * @param User $user
      * @param string $password
      * @return bool
      */
-    public function logIn(User $user, string $password)
+    public function logIn(string $password)
     {
         $result = false;
-        if(password_verify($password, $user->password)) {
-            $_SESSION['user'] = $user;
+        if (password_verify($password, $this->password)) {
+            $_SESSION['user'] = ["id"=>$this->id, "username"=>$this->username, "displayName"=>$this->display_name];
             $result = true;
         }
         return $result;
@@ -106,6 +104,15 @@ class User extends AbstractModel
      */
     public function logOut()
     {
-        unset($_SESSION['user']);
+        session_unset();
+    }
+
+    public static function isLoggedIn()
+    {
+        $result = false;
+        if($_SESSION['user']) {
+            $result = true;
+        }
+        return $result;
     }
 }
