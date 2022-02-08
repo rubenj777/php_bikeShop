@@ -2,8 +2,16 @@
 
 namespace Models;
 
-class User extends AbstractModel
+class User extends AbstractModel implements \JsonSerializable
 {
+
+    public function jsonSerialize()
+    {
+        return [
+            "name"=>$this->getDisplayName()
+        ];
+    }
+
     protected string $tableName = "users";
     private int $id;
     private string $username;

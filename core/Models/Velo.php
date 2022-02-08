@@ -2,8 +2,19 @@
 
 namespace Models;
 
-class Velo extends AbstractModel
+class Velo extends AbstractModel implements \JsonSerializable
 {
+    public function jsonSerialize()
+    {
+      return [
+          "id"=>$this->id,
+          "name"=>$this->name,
+          "description"=>$this->description,
+          "image"=>$this->image,
+          "avis"=>$this->getAvis(),
+      ];
+    }
+
     protected string $tableName = "velos";
     private int $id;
     private string $name;
@@ -69,6 +80,11 @@ class Velo extends AbstractModel
         $this->user_id = $user_id;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     /**
      * sauvegarde un velo dans la bdd
      * @param Velo $velo
@@ -94,10 +110,10 @@ class Velo extends AbstractModel
      */
     public function update(Velo $velo)
     {
-        $sql = $this->pdo->prepare("UPDATE {$this->tableName} SET name = :name, image = :image, description = :description, price = :price WHERE id = :id");
+        $sql = $this->pdo->prepare("UPDATE {$this->tableName} 
+        SET name = :name, description = :description, price = :price WHERE id = :id");
         $sql->execute([
             'name' => $velo->name,
-            'image' => $velo->image,
             'description' => $velo->description,
             'price' => $velo->price,
             'id' => $velo->id,

@@ -15,6 +15,43 @@ class Velo extends AbstractController
     }
 
     /**
+     * @return void
+     */
+    public function indexApi()
+    {
+        header('Access-Control-Allow-Origin: *');
+        echo json_encode($this->defaultModel->findAll());
+    }
+
+    /**
+     * @return Response|void
+     */
+    public function showApi()
+    {
+        $id = null;
+
+        if (!empty($_GET['id']) && ctype_digit($_GET['id'])) {
+            $id = $_GET['id'];
+        }
+
+        if (!$id) {
+            header('Access-Control-Allow-Origin: *');
+            return json_encode("pas d'id");
+        }
+
+        $velo = $this->defaultModel->findById($id);
+
+        if (!$velo) {
+            header('Access-Control-Allow-Origin: *');
+            return json_encode("pas de vélo");
+        }
+
+        header('Access-Control-Allow-Origin: *');
+        sleep(1);
+        echo json_encode($this->defaultModel->findById($id));
+    }
+
+    /**
      * affiche un seul vélo grace à la methode findById()
      * affiche les avis grace à la methode findAllByVelo()
      */
@@ -43,6 +80,52 @@ class Velo extends AbstractController
      * vérifie les informations entrées par l'utilisateur avant de faire appel à la méthode save() qui insert les données dans la DB
      */
     public function new()
+    {
+        $user = $this->getUser();
+        if(!$user) {
+            return $this->redirect(["type"=>"velo", "action"=>"index", "info"=>"Vous devez être connecté pour créer un vélo"]);
+        }
+
+        $name = null;
+        $description = null;
+        $price = null;
+        $user_id = null;
+
+        if (!empty($_POST['name']) && !empty($_POST['description']) && !empty($_POST['price'])) {
+            $name = $_POST['name'];
+            $description = $_POST['description'];
+            $price = $_POST['price'];
+        }
+
+        if ($name && $description && $price && !empty($_FILES['imageVelo'])) {
+
+            $file = new \App\File('imageVelo');
+            $file->upload();
+
+            $velo = new \Models\Velo();
+
+            $velo->setName($name);
+            $velo->setDescription($description);
+            $velo->setPrice($price);
+            $velo->setImage($file->getName());
+            $velo->setUserId($this->getUser()->getId());
+
+
+            if (!$file->isImage()) {
+                return $this->redirect(["type" => "velo", "action" => "index"]);
+            } else {
+                $this->defaultModel->save($velo);
+            }
+
+            return $this->redirect(["type" => "velo", "action" => "index"]);
+        }
+        return $this->render("velos/create", ["pageTitle" => "Nouveau vélo"]);
+    }
+
+    /**
+     * vérifie les informations entrées par l'utilisateur avant de faire appel à la méthode save() qui insert les données dans la DB
+     */
+    public function newApi()
     {
         $user = $this->getUser();
         if(!$user) {
@@ -145,7 +228,7 @@ class Velo extends AbstractController
         }
 
         if ($name && $description && $price && $idToEdit && !empty($_FILES['imageVelo'])) {
-
+            unset($file);
             $file = new \App\File('imageVelo');
             $file->upload();
 
@@ -153,6 +236,8 @@ class Velo extends AbstractController
             $velo->setName($name);
             $velo->setDescription($description);
             $velo->setPrice($price);
+            $velo->setId($idToEdit);
+
             $velo->setImage($file->getName());
 
             if (!$file->isImage()) {

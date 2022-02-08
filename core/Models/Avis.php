@@ -2,8 +2,19 @@
 
 namespace Models;
 
-class Avis extends AbstractModel
+class Avis extends AbstractModel implements \JsonSerializable
 {
+
+    public function jsonSerialize()
+    {
+        return [
+            "id"=>$this->id,
+            "author"=>$this->getUser(),
+            "content"=>$this->content,
+        ];
+    }
+
+
     protected string $tableName = "avis";
     private int $id;
     private string $author;
