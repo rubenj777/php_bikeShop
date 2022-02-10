@@ -19,8 +19,7 @@ class Velo extends AbstractController
      */
     public function indexApi()
     {
-        header('Access-Control-Allow-Origin: *');
-        echo json_encode($this->defaultModel->findAll());
+        return $this->json($this->defaultModel->findAll());
     }
 
     /**
@@ -35,20 +34,17 @@ class Velo extends AbstractController
         }
 
         if (!$id) {
-            header('Access-Control-Allow-Origin: *');
-            return json_encode("pas d'id");
+            return $this->json("pas d'id");
         }
 
         $velo = $this->defaultModel->findById($id);
 
         if (!$velo) {
-            header('Access-Control-Allow-Origin: *');
-            return json_encode("pas de vélo");
+            return $this->json("pas de vélo");
         }
 
-        header('Access-Control-Allow-Origin: *');
         sleep(1);
-        echo json_encode($this->defaultModel->findById($id));
+        return $this->json($this->defaultModel->findById($id));
     }
 
     /**
@@ -200,26 +196,18 @@ class Velo extends AbstractController
      */
     public function edit()
     {
-        $pageTitle = "Modifier le vélo";
+
+        $name = null;
+        $description = null;
+        $price = null;
         $id = null;
         $velo = null;
 
         if (!empty($_GET['id']) && ctype_digit($_GET['id'])) {
             $id = $_GET['id'];
-        }
 
-        if ($id) {
-            $velo = $this->defaultModel->findById($id);
         }
-
-        $name = null;
-        $description = null;
-        $price = null;
-        $idToEdit = null;
-
-        if (!empty($_POST['id']) && ctype_digit($_POST['id'])) {
-            $idToEdit = $_POST['id'];
-        }
+        $velo = $this->defaultModel->findById($id);
 
         if (!empty($_POST['name']) && !empty($_POST['description']) && !empty($_POST['price'])) {
             $name = htmlspecialchars($_POST['name']);
@@ -227,31 +215,31 @@ class Velo extends AbstractController
             $price = htmlspecialchars($_POST['price']);
         }
 
-        if ($name && $description && $price && $idToEdit && !empty($_FILES['imageVelo'])) {
+        if ($name && $description && $price && !empty($_FILES['imageVelo'])) {
             unset($file);
             $file = new \App\File('imageVelo');
             $file->upload();
 
-            $velo = new \Models\Velo();
+
             $velo->setName($name);
             $velo->setDescription($description);
             $velo->setPrice($price);
-            $velo->setId($idToEdit);
 
             $velo->setImage($file->getName());
 
             if (!$file->isImage()) {
                 return $this->redirect(["type" => "velo", "action" => "index"]);
             } else {
-                $this->defaultModel->update($velo, $idToEdit);
+                $this->defaultModel->update($velo);
             }
 
             return $this->redirect([
                 'type' => 'velo',
                 'action' => 'show',
-                'id' => $idToEdit
+                'id' => $id
             ]);
         }
-        return $this->render('velos/edit', ['pageTitle' => $pageTitle, 'velo' => $velo]);
+        return $this->render('velos/edit', ['pageTitle' => "Modifier", 'velo' => $velo]);
     }
+
 }

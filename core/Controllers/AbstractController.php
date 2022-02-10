@@ -17,6 +17,50 @@ abstract class AbstractController
     }
 
     /**
+     * @param $res
+     * @return void
+     */
+    public function json($res,? string $methodSpe = null){
+        return \App\Response::json($res, $methodSpe);
+    }
+
+    /**
+     * @param string $dataType
+     * @param array $requestBodyParams
+     * @return array|false
+     */
+    public function post(string $dataType, array $requestBodyParams) {
+        return \App\Request::post($dataType, $requestBodyParams);
+    }
+
+    /**
+     * @param string $dataType
+     * @param array $requestBodyParams
+     * @return array|false
+     */
+    public function get(string $dataType, array $requestBodyParams) {
+        return \App\Request::get($dataType, $requestBodyParams);
+    }
+
+    /**
+     * @param string $dataType
+     * @param array $requestBodyParams
+     * @return array|false
+     */
+    public function put(string $dataType, array $requestBodyParams) {
+        return \App\Request::put($dataType, $requestBodyParams);
+    }
+
+    /**
+     * @param string $dataType
+     * @param array $requestBodyParams
+     * @return array|false
+     */
+    public function delete(string $dataType, array $requestBodyParams) {
+        return \App\Request::delete($dataType, $requestBodyParams);
+    }
+
+    /**
      * permet de se rediriger vers la page qu'on souhaite en indiquant le chemin dans les paramètres
      * @return Response
      */
