@@ -2,9 +2,9 @@
 
 namespace Controllers;
 
-class Message extends AbstractController
+class Voiture extends AbstractController
 {
-    protected $defaultModelName = \Models\Message::class;
+    protected $defaultModelName = \Models\Voiture::class;
 
     /**
      * @return void
@@ -19,15 +19,16 @@ class Message extends AbstractController
      */
     public function new()
     {
-        $request = $this->post('json', ['author'=>'text', 'content'=>'text']);
+        $request = $this->post('json', ['name'=>'text', 'brand'=>'text', 'price'=>'number']);
         if(!$request) {
             return $this->json('not ok');
         }
 
-        $message = new \Models\Message();
-        $message->setAuthor($request['author']);
-        $message->setContent($request['content']);
-        $this->defaultModel->save($message);
+        $voiture = new \Models\Voiture();
+        $voiture->setName($request['name']);
+        $voiture->setBrand($request['brand']);
+        $voiture->setPrice($request['price']);
+        $this->defaultModel->save($voiture);
 
         return $this->json('ok');
     }
@@ -43,13 +44,13 @@ class Message extends AbstractController
             return $this->json('request not ok', 'delete');
         }
 
-        $message = $this->defaultModel->findById($request['id']);
+        $voiture = $this->defaultModel->findById($request['id']);
 
-        if(!$message) {
-            return $this->json('message not ok', 'delete');
+        if(!$voiture) {
+            return $this->json('voiture not exists', 'delete');
         }
 
-        $this->defaultModel->remove($message);
+        $this->defaultModel->remove($voiture);
         return $this->json('ok', 'delete');
     }
 }
